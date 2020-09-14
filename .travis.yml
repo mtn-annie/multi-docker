@@ -1,0 +1,22 @@
+sudo: required
+services:
+  - docker
+
+before_install:
+  - docker build -t mtnannie/react-test -f ./client/Dockerfile.dev ./client
+
+script:
+  - docker run -e CI=true mtnannie/react-test npm test
+
+after_success:
+  - docker build -t mtnannie/multi-client ./client
+  - docker build -t mtnannie/multi-nginx ./nginx
+  - docker build -t mtnannie/multi-server ./server
+  - docker build -t mtnannie/multi-worker ./worker
+  # Log in to the docker CLI
+  - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_ID"
+  # take images and push to docker hub
+  - docker push mtnannie/multi-client
+  - docker push mtnannie/multi-nginx
+  - docker push mtnannie/multi-server
+  - docker push mtnannie/multi-worker
