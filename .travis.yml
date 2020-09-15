@@ -14,7 +14,7 @@ after_success:
   - docker build -t mtnannie/multi-server ./server
   - docker build -t mtnannie/multi-worker ./worker
   # Log in to the docker CLI
-  - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USER"
+  - docker login -u "$DOCKER_USER" -p "$DOCKER_PASSWORD" 
   # take images and push to docker hub
   - docker push mtnannie/multi-client
   - docker push mtnannie/multi-nginx
